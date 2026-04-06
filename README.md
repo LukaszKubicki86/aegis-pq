@@ -25,7 +25,7 @@ What already works:
 
 Latest validated state:
 
-- `147 passed`
+- `151 passed`
 - `2 skipped`
 
 ## Why this project exists
@@ -57,6 +57,34 @@ You can inspect them with:
 python main.py pq-profile-compare
 python main.py pq-profile-costs
 ```
+
+## Documentation
+
+- [Showcase overview](README_SHOWCASE.md)
+- [Architecture](docs/architecture.md)
+- [PQ Profiles](docs/profiles.md)
+- [Sample demo report](docs/demo-report-hardened.md)
+- [Roadmap](ROADMAP.md)
+- [Public/private repo strategy](PUBLIC_PRIVATE_STRATEGY.md)
+- [License status](LICENSE_STATUS.md)
+
+## Showcase snapshots
+
+### Project diagnostics
+
+![Aegis doctor output](images/doctor-output.png)
+
+### PQ profile costs
+
+![Aegis PQ profile costs](images/pq-profile-costs.png)
+
+### Demo flow — hardened
+
+![Aegis demo project flow hardened](images/demo-project-flow-hardened.png)
+
+### Demo flow — max
+
+![Aegis demo project flow max](images/demo-project-flow-max.png)
 
 ## Quick start
 
