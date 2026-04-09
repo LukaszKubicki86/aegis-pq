@@ -1,0 +1,4 @@
+cryptography==46.0.6
+PySide6
+pytest==9.0.2
+git+https://github.com/open-quantum-safe/liboqs-python.git

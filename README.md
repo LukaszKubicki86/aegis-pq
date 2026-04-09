@@ -1,253 +1,173 @@
-# Aegis
+# Aegis Signer Demo
 
-Aegis is a post-quantum transaction and wallet prototype built around **FIPS 204 / ML-DSA** profile-aware signing flows.
+Aegis Signer Demo is a public showcase build focused on **post-quantum digital signatures**, **file verification**, **key inspection**, **private-key protection**, and **key rotation** using **ML-DSA aligned with NIST FIPS 204**.
 
-It is designed as an engineering-first project that explores how **post-quantum wallet infrastructure**, **profile-based signature choices**, and **end-to-end transaction validation** can work inside a coherent CLI/API system.
+This repository is intentionally limited to the **signer workflow**. It is meant to demonstrate the current public-facing direction of the project without exposing the broader private engineering scope.
 
-## Current status
+## What this demo is
 
-Aegis is currently in an **alpha technical showcase** stage.
+This demo presents a real signer application with:
 
-What already works:
+- a desktop UI built with **PySide6**
+- **ML-DSA** key generation across three profiles
+- optional **password-based private-key encryption**
+- key inspection with **security metadata and policy state**
+- file signing and signature verification
+- **key rotation**
+- **rotation-policy evaluation and enforcement**
+- a focused public test subset for the signer scope
 
-- profile-aware PQ wallets:
-  - `standard` -> `ML-DSA-44`
-  - `hardened` -> `ML-DSA-65`
-  - `max` -> `ML-DSA-87`
-- persisted classical wallets
-- persisted PQ wallets
-- PQ-to-classical transaction flow
-- pending pool and mining flow
-- profile comparison and profile cost views
-- project health and backend readiness diagnostics
-- end-to-end in-memory demo flow
-- automated test suite
+## Security highlights
 
-Latest validated state:
+This public demo explicitly shows that:
 
-- `151 passed`
-- `2 skipped`
+- private keys can be stored in **encrypted form** when protected with a password
+- encrypted private keys use **Argon2id** for password-based key derivation and **AES-256-GCM** for authenticated encryption
+- keys carry **lifecycle and security metadata** such as status, creation time, and rotation information
+- the project applies a **rotation policy** rather than treating key generation as a one-time action
+- incomplete, rotated, revoked, or overdue keys are not meant to be accepted as normal signing keys
 
-## Why this project exists
+See [SECURITY_NOTICE.md](SECURITY_NOTICE.md) for the public security framing and implementation-level details used in the demo.
 
-Most existing blockchain and wallet ecosystems still rely on classical signature schemes that are not designed for a future large-scale quantum threat model.
+## Supported profiles
 
-Aegis explores a different direction:
+The current public demo includes three ML-DSA profiles:
 
-- explicit use of **ML-DSA**
-- explicit reference to **FIPS 204**
-- multiple operational profiles with different size/cost/security trade-offs
-- a transaction pipeline that preserves PQ signature metadata all the way through validation
+- `standard` → `ML-DSA-44`
+- `hardened` → `ML-DSA-65`
+- `max` → `ML-DSA-87`
 
-This makes Aegis closer to a **post-quantum wallet / signing infrastructure prototype** than a typical toy blockchain.
+The project also exposes metadata such as:
 
-## PQ profiles
+- `key_status`
+- `key_created_at_utc`
+- `rotated_from`
+- `rotation_reason`
+- policy states such as `ok`, `due_soon`, `overdue`, `rotated`, `revoked`, or `unknown`
 
-Aegis currently supports three PQ profiles:
+## Rotation policy
 
-| Profile | Backend | Purpose |
-|---|---|---|
-| `standard` | `ML-DSA-44` | Balanced default profile for the current engineering phase |
-| `hardened` | `ML-DSA-65` | Higher-security profile for later production-like testing |
-| `max` | `ML-DSA-87` | Maximum-security profile with the highest size and performance cost |
+The public demo includes a concrete key-rotation model:
 
-You can inspect them with:
+- `standard` → recommended rotation window: **365 days**
+- `hardened` → recommended rotation window: **365 days**
+- `max` → recommended rotation window: **548 days**
+- `due_soon` threshold → **30 days**
+- signing is only considered acceptable for policy states `ok` and `due_soon`
 
-```powershell
-python main.py pq-profile-compare
-python main.py pq-profile-costs
-```
+This is meant to show that key lifecycle and operational policy are part of the product, not an afterthought.
 
-## Documentation
+## NIST direction
 
-- [Showcase overview](README_SHOWCASE.md)
-- [Architecture](docs/architecture.md)
-- [PQ Profiles](docs/profiles.md)
-- [Sample demo report](docs/demo-report-hardened.md)
-- [Roadmap](ROADMAP.md)
-- [Public/private repo strategy](PUBLIC_PRIVATE_STRATEGY.md)
-- [License status](LICENSE_STATUS.md)
+The current public demo is centered on **FIPS 204 / ML-DSA**.
 
-## Showcase snapshots
+The broader project direction is to stay **NIST-aligned**, with the signer domain currently anchored on:
 
-### Project diagnostics
+- **FIPS 204** for ML-DSA signatures
 
-![Aegis doctor output](images/doctor-output.png)
+The private full-version roadmap may later expand into:
 
-### PQ profile costs
+- **FIPS 205 / SLH-DSA** as an additional signature track
+- **FIPS 203 / ML-KEM** for secure exchange / KEM-oriented workflows
 
-![Aegis PQ profile costs](images/pq-profile-costs.png)
+This demo is not a certification claim. It is a public engineering showcase aligned with the current NIST direction chosen for the signer domain.
 
-### Demo flow — hardened
+## What this demo includes
 
-![Aegis demo project flow hardened](images/demo-project-flow-hardened.png)
+Public scope includes:
 
-### Demo flow — max
+- signer UI
+- ML-DSA key generation
+- optional private-key encryption
+- key inspection and public-key export
+- file signing
+- signature verification
+- key rotation
+- selected signer-domain tests
 
-![Aegis demo project flow max](images/demo-project-flow-max.png)
+See [DEMO_SCOPE.md](DEMO_SCOPE.md) for the exact public boundary.
+
+## What the full private version is expected to add
+
+The private full version is expected to expand beyond this public demo in areas such as:
+
+- broader UI polish and packaging
+- wider operational workflows
+- larger private API and CLI coverage
+- stronger release engineering and distribution paths
+- extended security controls and project policies
+- possible future expansion toward additional NIST PQ standards
+
+See [FULL_VERSION_OUTLOOK.md](FULL_VERSION_OUTLOOK.md) for the positioning used in public materials.
+
+## Suggested first demo flow
+
+1. Launch the desktop UI.
+2. Generate a new key using one of the ML-DSA profiles.
+3. Inspect the key details and review the policy state.
+4. Sign a file.
+5. Verify the signature.
+6. Rotate the key and compare the old and new key states.
+
+## Screenshots
+
+### Home — Polish
+
+![Aegis home screen (PL)](images/home-pl.png)
+
+### Home — English
+
+![Aegis home screen (EN)](images/home-en.png)
+
+### Generate key
+
+![Aegis generate key screen](images/generate-key-pl.png)
+
+### Key details
+
+![Aegis key details screen](images/key-details-pl.png)
 
 ## Quick start
 
-### 1. Run the test suite
+### Recommended environment
+
+Use a **clean virtual environment**.
 
 ```powershell
-python -m pytest
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -U pip
+python -m pip install -r requirements-demo.txt
 ```
 
-### 2. Check project and PQ backend status
+### Run the UI
 
 ```powershell
-python main.py doctor
-python main.py pq-real-check
+python -m signer_app.ui.app
 ```
 
-### 3. Run the full in-memory demo
+### Run the CLI-style demo flow
 
 ```powershell
-python main.py demo-project-flow
-python main.py demo-project-flow --profile hardened
-python main.py demo-project-flow --profile max
+python signer_demo.py
 ```
 
-### 4. Create PQ wallets with explicit profiles
+### Run the public test subset
 
 ```powershell
-python main.py create-pq-real-wallet --name pq_standard_demo --profile standard
-python main.py create-pq-real-wallet --name pq_hardened_demo --profile hardened
-python main.py create-pq-real-wallet --name pq_max_demo --profile max
+python -m pytest tests/test_signer_key_service.py tests/test_signer_file_sign_service.py tests/test_signer_file_verify_service.py tests/test_demo_signer_flow_service.py tests/test_key_rotation_policy.py -q
 ```
 
-### 5. Inspect a PQ wallet
+## Repository contents
 
-```powershell
-python main.py show-pq-real-wallet --name pq_hardened_demo
-```
+- `signer_app/` — public UI and signer services
+- `app/` — minimal shared modules needed for key policy and private-key protection
+- `tests/` — public signer-domain tests
+- `images/` — screenshots used in the public README
+- `signer_demo.py` — simple demo flow script
 
-## Example persisted flow
+## Important public note
 
-This flow uses the persisted chain and wallet files.
+This repository is a **public demo repository**, not the full private product.
 
-```powershell
-python main.py init
-python main.py create-wallet --name classical_receiver
-python main.py create-wallet --name classical_miner
-python main.py create-pq-real-wallet --name pq_sender --profile hardened
-python main.py fund-pq-real-wallet --name pq_sender --amount 100
-python main.py pq-real-send-live --sender pq_sender --receiver classical_receiver --amount 10 --fee 1
-python main.py show-pending
-python main.py pq-real-mine-live --miner classical_miner
-python main.py show-chain
-python main.py show-balances
-```
-
-## Main CLI commands
-
-### Diagnostics
-
-```powershell
-python main.py doctor
-python main.py pq-real-check
-python main.py pq-profile-compare
-python main.py pq-profile-costs
-```
-
-### Demo
-
-```powershell
-python main.py demo-project-flow
-python main.py demo-project-flow --profile max
-```
-
-### Wallets
-
-```powershell
-python main.py create-wallet --name classical_user
-python main.py show-wallet --name classical_user
-
-python main.py create-pq-real-wallet --name pq_user --profile standard
-python main.py show-pq-real-wallet --name pq_user
-```
-
-### Chain and balances
-
-```powershell
-python main.py init
-python main.py show-chain
-python main.py show-balances
-python main.py show-pending
-```
-
-### Transactions and mining
-
-```powershell
-python main.py send --sender classical_miner --receiver classical_user --amount 1 --fee 0.1
-python main.py mine --miner classical_miner
-
-python main.py pq-real-send-live --sender pq_user --receiver classical_user --amount 10 --fee 1
-python main.py pq-real-mine-live --miner classical_miner
-```
-
-## Architecture direction
-
-Aegis currently follows a layered structure:
-
-- `app/` for core application logic
-- `app/services/` for service-layer orchestration
-- CLI entry in `main.py`
-- API layer in `app/api.py`
-- persisted runtime paths managed through runtime utilities
-- dedicated PQ wallet / transaction / policy modules
-- tests in `tests/`
-
-This structure is meant to keep the project extensible as it grows from prototype toward a more product-oriented toolkit.
-
-## What Aegis is not yet
-
-Aegis is **not** yet:
-
-- a production blockchain
-- a production wallet SDK
-- a launched cryptocurrency
-- a finished commercial product
-
-It is currently best understood as:
-
-## a profile-aware post-quantum transaction and wallet prototype
-
-## Most realistic next product direction
-
-The most realistic early product direction is not launching a coin first.
-
-The strongest near-term direction is:
-
-- **PQ wallet / signing toolkit**
-- **developer-facing SDK**
-- **post-quantum transaction demo platform**
-- **security migration showcase for wallet infrastructure**
-
-That direction is closer to the current codebase and much more realistic for early trust and early small revenue.
-
-## Suggested roadmap
-
-Short-term:
-
-1. stabilize showcase and README quality
-2. expose a cleaner public demo path
-3. tighten API contract and response consistency
-4. package the project more cleanly
-5. define the first external-facing use case
-
-After that:
-
-- SDK packaging
-- better docs
-- public demo repo presentation
-- early outreach to dev/security/crypto infrastructure audiences
-
-## Notes
-
-Aegis uses **ML-DSA / FIPS 204** terminology deliberately and avoids claiming impossible guarantees. The goal is to build a technically honest and demonstrable post-quantum signing and transaction prototype.
-
-## License
-
-Add the intended license before public release.
+The purpose of this repo is to show the signer workflow, key lifecycle, and NIST-aligned direction clearly and honestly.
